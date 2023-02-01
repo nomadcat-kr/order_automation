@@ -11,10 +11,5 @@ const List<String> coupangKeyList = [
 ];
 const String statusFinalDelivery = 'FINAL_DELIVERY';
 const String coupangHost = 'api-gateway.coupang.com';
-// const String coupangHost = 'cors.bridged.cc/api-gateway.coupang.com';
 const String coupangMethodGet = 'GET';
 const String coupangMethodPost = 'POST';
-
-
-
-// https://cors.bridged.cc/

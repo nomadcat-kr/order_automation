@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import 'package:order_automation/data/repositories/get_json.dart';
 import 'package:order_automation/data/repositories/get_keys.dart';
 import 'package:excel/excel.dart';
-import 'dart:html' as html;
 
 part 'launch_event.dart';
 
@@ -37,11 +36,17 @@ class LaunchBloc extends Bloc<LaunchEvent, LaunchState> {
     GetCoupangKeys getCoupangKeys = GetCoupangKeys();
     List<String> keys = getCoupangKeys.getCoupangKeys();
 
+    List data = [];
+    GetJson getJson = GetJson();
+    data = await getJson.get();
+
     emit(state.copyWith(
       eventType: LaunchEventType.started,
       status: FormzStatus.submissionSuccess,
       keys: keys,
       keyTextFieldClicked: false,
+      getData: data,
+
     ));
   }
 
@@ -99,8 +104,7 @@ class LaunchBloc extends Bloc<LaunchEvent, LaunchState> {
       status: FormzStatus.submissionInProgress,
     ));
 
-    // List data = [];
-    String data = '';
+    List data = [];
     GetJson getJson = GetJson();
     data = await getJson.get();
 
@@ -238,8 +242,7 @@ class LaunchBloc extends Bloc<LaunchEvent, LaunchState> {
     emit(state.copyWith(
       eventType: LaunchEventType.orderListPrintClicked,
       status: FormzStatus.submissionSuccess,
-      // getData: data,
-      code: data.toString(),
+      getData: data,
     ));
   }
 

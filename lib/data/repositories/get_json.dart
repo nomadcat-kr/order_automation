@@ -1,20 +1,19 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:html' as html;
 import 'package:crypto/crypto.dart';
 import 'package:intl/intl.dart';
 import 'package:order_automation/app/common/constants/coupang_api_constants.dart';
 import 'package:order_automation/data/repositories/get_keys.dart';
 
 class GetJson {
-  Future<String> get() async {
+  Future<List> get() async {
     GetCoupangKeys getCoupangKeys = GetCoupangKeys();
     List<String> keys = getCoupangKeys.getCoupangKeys();
     String vendorId = keys[0];
     String accessKey = keys[1];
     String secretKey = keys[2];
-    // String mallName = keys[3];
+    String mallName = keys[3];
     String status = statusFinalDelivery;
 
     String createdAtFrom = DateFormat('yyyy-MM-dd')
@@ -46,16 +45,61 @@ class GetJson {
     var headers = {
       'Authorization': authorization,
       'X-Requested-By': vendorId,
-      'content-type': 'application/json',
+      'Content-Type': 'text/plain',
       // 'X-EXTENDED-TIMEOUT': '90000',
-      // 'Access-Control-Allow-Origin': '*',
-      // 'Access-Control-Allow-Credentials': 'true',
-      // 'Access-Control-Allow-Methods': 'GET, POST',
-      // 'Access-Control-Allow-Headers': 'Authorization, X-Requested-By, Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Access-Control-Allow-Methods',
+      'Access-Control-Allow-Origin': '*',
+      "Access-Control-Allow-Methods": "POST, GET, OPTIONS, PUT, DELETE, HEAD",
+      'Access-Control-Allow-Credentials': 'true',
+      'Access-Control-Allow-Headers': '*',
     };
 
     List data = [];
-    String ee = '출발';
+
+    // final response = await http.get(Uri.parse(
+    //   'https://us-central1-order-automation-kr.cloudfunctions.net/app'),
+    //   // headers: <String, String>{
+    //   //   'Content-Type': 'application/json; charset=UTF-8',
+    //   // },
+    //   // body: jsonEncode(<String, dynamic>{
+    //   //   'host': coupangHost,
+    //   //   'path': coupangPath,
+    //   //   'method': coupangMethodGet,
+    //   //   'header': headers,
+    //   // },
+    //   // ),
+    // );
+
+    // if (response.statusCode == 200) {
+    //   debugPrint(response.body);
+    //   // return json.decode(response.body)['data'];
+    // } else {
+    //   throw Exception('Failed to send request');
+    // }
+
+    // try {
+    //   http.Response uriResponse = await http.post(
+    //     Uri.parse(
+    //         'https://us-central1-order-automation-kr.cloudfunctions.net/getCoupang'),
+    //     headers: headers,
+    //     body: jsonEncode({
+    //       'host': coupangHost,
+    //       'path': coupangPath,
+    //       'method': coupangMethodGet,
+    //       'headers': headers,
+    //     }),
+    //   );
+    //   Map<String, dynamic> json = jsonDecode(uriResponse.body);
+    //   if (json['code'] != 200) {
+    //     debugPrint(json['code'].toString());
+    //     debugPrint(json['message'].toString());
+    //   } else {
+    //     data = json['data'];
+    //     // debugPrint(data.toString());
+    //   }
+    // } catch (e) {
+    //   debugPrint('request error');
+    // }
+
     try {
       http.Response uriResponse = await http.get(
           Uri.https(coupangHost, coupangPath, queryParameters),
@@ -69,9 +113,8 @@ class GetJson {
         // debugPrint(data.toString());
       }
     } catch (e) {
-      // html.window.open('https://naver.com', 'new tab');
-      ee = e.toString();
+      debugPrint('request error');
     }
-    return ee;
+    return data;
   }
 }

@@ -12,9 +12,6 @@ class LaunchView extends StatelessWidget {
     return BlocBuilder<LaunchBloc, LaunchState>(
       builder: (context, state) {
         return Scaffold(
-          appBar: AppBar(
-            title: Text(state.code.toString()),
-          ),
           drawer: SideMenu(
               keys: state.keys ?? [],
               isKeyTextFieldClicked: state.keyTextFieldClicked),

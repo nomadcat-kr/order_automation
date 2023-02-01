@@ -24,9 +24,9 @@ class DashBoard extends StatelessWidget {
                   flex: 5,
                   child: Column(
                     children: [
-                      const MyFields(),
+                      RecentFiles(result: result),
                       const SizedBox(height: defaultPadding),
-                       RecentFiles(result: result),
+                      const MyFields(),
                       if (Responsive.isMobile(context))
                         const SizedBox(height: defaultPadding),
                       if (Responsive.isMobile(context)) const StarageDetails(),
