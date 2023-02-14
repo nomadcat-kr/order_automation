@@ -6,8 +6,11 @@ enum LaunchEventType {
   clicked,
   textEditing,
   refreshed,
-  orderListPrintClicked,
-  textFieldClicked,
+  orderListUploadClicked,
+  orderListDownloadClicked,
+  invoiceListUploadClicked,
+  invoiceListPutRequestClicked,
+  settlementHistoryGetClicked,
   keyTextFieldClicked,
 }
 
@@ -20,9 +23,15 @@ extension LaunchEventTypeX on LaunchEventType{
 
   bool get isRefreshed =>this == LaunchEventType.refreshed;
 
-  bool get isOrderListPrintClicked =>this == LaunchEventType.orderListPrintClicked;
+  bool get isOrderListUploadClicked =>this == LaunchEventType.orderListUploadClicked;
 
-  bool get isTextFieldClicked =>this == LaunchEventType.textFieldClicked;
+  bool get isOrderListDownloadClicked =>this == LaunchEventType.orderListDownloadClicked;
+
+  bool get isInvoiceListUploadClicked =>this == LaunchEventType.invoiceListUploadClicked;
+
+  bool get isInvoiceListPutRequestClicked =>this == LaunchEventType.invoiceListPutRequestClicked;
+
+  bool get isSettlementHistoryGetClicked =>this == LaunchEventType.settlementHistoryGetClicked;
 
   bool get isKeyTextFieldClicked =>this == LaunchEventType.keyTextFieldClicked;
 

@@ -5,54 +5,79 @@ class LaunchState extends Equatable {
   const LaunchState({
     this.status = FormzStatus.pure,
     this.eventType = LaunchEventType.pure,
-    this.counts = 0,
-    this.keyType = '',
     this.keys,
-    this.getData,
+    this.statusAccept,
+    this.statusInstruct,
+    this.statusDeparture,
+    this.statusDelivering,
+    this.statusFinalDelivery,
+    this.consumerService,
+    this.callCenterInquiries,
+    this.revenueHistory,
     this.keyTextFieldClicked = false,
-    this.code = '',
+    this.loadingFinished = false,
   });
 
   final FormzStatus status;
   final LaunchEventType eventType;
-  final int counts;
-  final String keyType;
   final List<String>? keys;
-  final List<dynamic>? getData;
+  final List<dynamic>? statusAccept;
+  final List<dynamic>? statusInstruct;
+  final List<dynamic>? statusDeparture;
+  final List<dynamic>? statusDelivering;
+  final List<dynamic>? statusFinalDelivery;
+  final List<dynamic>? consumerService;
+  final List<dynamic>? callCenterInquiries;
+  final Map<dynamic, dynamic>? revenueHistory;
   final bool keyTextFieldClicked;
-  final String code;
+  final bool loadingFinished;
 
   @override
   List<Object?> get props => [
         status,
         eventType,
-        counts,
-        keyType,
         keys,
-        getData,
+        statusAccept,
+        statusInstruct,
+        statusDeparture,
+        statusDelivering,
+        statusFinalDelivery,
+        consumerService,
+        callCenterInquiries,
+        revenueHistory,
         keyTextFieldClicked,
-        code,
+        loadingFinished,
       ];
 
   LaunchState copyWith({
     FormzStatus? status,
     LaunchEventType? eventType,
-    int? counts,
-    String? keyType,
     List<String>? keys,
-    List<dynamic>? getData,
+    List<dynamic>? statusAccept,
+    List<dynamic>? statusInstruct,
+    List<dynamic>? statusDeparture,
+    List<dynamic>? statusDelivering,
+    List<dynamic>? statusFinalDelivery,
+    List<dynamic>? consumerService,
+    List<dynamic>? callCenterInquiries,
+    Map<dynamic, dynamic>? revenueHistory,
     bool? keyTextFieldClicked,
-    String? code,
+    bool? loadingFinished,
   }) {
     return LaunchState(
       status: status ?? this.status,
       eventType: eventType ?? this.eventType,
-      counts: counts ?? this.counts,
-      keyType: keyType ?? this.keyType,
       keys: keys ?? this.keys,
-      getData: getData ?? this.getData,
+      statusAccept: statusAccept ?? this.statusAccept,
+      statusInstruct: statusInstruct ?? this.statusInstruct,
+      statusDeparture: statusDeparture ?? this.statusDeparture,
+      statusDelivering: statusDelivering ?? this.statusDelivering,
+      statusFinalDelivery: statusFinalDelivery ?? this.statusFinalDelivery,
+      consumerService: consumerService ?? this.consumerService,
+      callCenterInquiries: callCenterInquiries ?? this.callCenterInquiries,
+      revenueHistory: revenueHistory ?? this.revenueHistory,
       keyTextFieldClicked: keyTextFieldClicked ?? this.keyTextFieldClicked,
-      code: code ?? this.code,
+      loadingFinished: loadingFinished ?? this.loadingFinished,
     );
   }
 }

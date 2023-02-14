@@ -1,6 +1,8 @@
+import 'package:formz/formz.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:order_automation/app/common/widgets/responsive.dart';
+import 'package:order_automation/app/common/widgets/platform.dart';
 import 'package:order_automation/app/pages/launch/launch.dart';
 import 'package:order_automation/domain/blocs/launch/launch_bloc.dart';
 
@@ -9,30 +11,49 @@ class LaunchView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LaunchBloc, LaunchState>(
+    return BlocConsumer<LaunchBloc, LaunchState>(
+      listener: (context, state) {
+        if (state.eventType.isOrderListUploadClicked &&
+            state.status.isSubmissionSuccess) {
+          BlocProvider.of<LaunchBloc>(context).add(
+            LaunchEventStarted(),
+          );
+        }
+        if (state.eventType.isInvoiceListPutRequestClicked &&
+            state.status.isSubmissionSuccess) {
+          BlocProvider.of<LaunchBloc>(context).add(
+            LaunchEventStarted(),
+          );
+        }
+        if (state.eventType.isRefreshed && state.status.isSubmissionSuccess) {
+          BlocProvider.of<LaunchBloc>(context).add(
+            LaunchEventStarted(),
+          );
+        }
+      },
       builder: (context, state) {
         return Scaffold(
-          drawer: SideMenu(
-              keys: state.keys ?? [],
-              isKeyTextFieldClicked: state.keyTextFieldClicked),
+          resizeToAvoidBottomInset: false,
           body: SafeArea(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (Responsive.isDesktop(context))
-                  Expanded(
-                    flex: 1,
-                    child: SideMenu(
-                        keys: state.keys ?? [],
-                        isKeyTextFieldClicked:
-                            state.keyTextFieldClicked),
+            child: PlatformCheck.isApp(context)
+                ? LaunchViewApp(
+                    keys: state.keys ?? [],
+                    statusAccept: state.statusAccept ?? [],
+                    statusInstruct: state.statusInstruct ?? [],
+                    statusDeparture: state.statusDeparture ?? [],
+                    statusDelivering: state.statusDelivering ?? [],
+                    statusFinalDelivery: state.statusFinalDelivery ?? [],
+                    consumerService: state.consumerService ?? [],
+                    callCenterInquiries: state.callCenterInquiries ?? [],
+                    revenueHistory: state.revenueHistory ?? {},
+                    isKeyTextFieldClicked: state.keyTextFieldClicked,
+                    isLoadingFinished: state.status.isSubmissionSuccess,
+                  )
+                : LaunchViewWeb(
+                    keys: state.keys ?? [],
+                    isKeyTextFieldClicked: state.keyTextFieldClicked,
+                    isLoadingFinished: state.status.isSubmissionSuccess,
                   ),
-                Expanded(
-                  flex: 5,
-                  child: DashBoard(result: state.getData),
-                ),
-              ],
-            ),
           ),
         );
       },

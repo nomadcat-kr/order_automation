@@ -1,28 +1,36 @@
 part of 'launch_bloc.dart';
 
 @immutable
-abstract class LaunchEvent extends Equatable{
+abstract class LaunchEvent extends Equatable {
   const LaunchEvent();
 
   @override
-  List<Object?> get props => [
-
-
-
-  ];
+  List<Object?> get props => [];
 }
 
+class LaunchEventStarted extends LaunchEvent {}
 
-class LaunchEventStarted extends LaunchEvent{}
+class LaunchEventClicked extends LaunchEvent {}
 
-class LaunchEventClicked extends LaunchEvent{}
+class LaunchEventTextEditing extends LaunchEvent {
+  const LaunchEventTextEditing({required String inputText});
 
-class LaunchEventTextEditing extends LaunchEvent{}
+  final String inputText = '';
 
-class LaunchEventRefreshed extends LaunchEvent{}
+  @override
+  List<Object?> get props => [inputText];
+}
 
-class LaunchEventOrderListPrintClicked extends LaunchEvent{}
+class LaunchEventRefreshed extends LaunchEvent {}
 
-class LaunchEventTextFieldClicked extends LaunchEvent{}
+class LaunchEventOrderListUploadClicked extends LaunchEvent {}
 
-class LaunchEventKeyTextFieldClicked extends LaunchEvent{}
+class LaunchEventOrderListDownloadClicked extends LaunchEvent {}
+
+class LaunchEventInvoiceListUploadClicked extends LaunchEvent {}
+
+class LaunchEventInvoiceListPutRequestClicked extends LaunchEvent {}
+
+class LaunchEventSettlementHistoryGetClicked extends LaunchEvent {}
+
+class LaunchEventKeyTextFieldClicked extends LaunchEvent {}

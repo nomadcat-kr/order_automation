@@ -9,7 +9,12 @@ const List<String> coupangKeyList = [
   coupangSecretKey,
   coupangMallName
 ];
-const String statusFinalDelivery = 'FINAL_DELIVERY';
+const String coupangStatusAccept = 'ACCEPT';
+const String coupangStatusInstruct = 'INSTRUCT';
+const String coupangStatusDeparture = 'DEPARTURE';
+const String coupangStatusDelivering = 'DELIVERING';
+const String coupangStatusFinalDelivery = 'FINAL_DELIVERY';
 const String coupangHost = 'api-gateway.coupang.com';
 const String coupangMethodGet = 'GET';
+const String coupangMethodPut = 'PUT';
 const String coupangMethodPost = 'POST';
