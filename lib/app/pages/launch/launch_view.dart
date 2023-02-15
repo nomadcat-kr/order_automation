@@ -48,6 +48,7 @@ class LaunchView extends StatelessWidget {
                     revenueHistory: state.revenueHistory ?? {},
                     isKeyTextFieldClicked: state.keyTextFieldClicked,
                     isLoadingFinished: state.status.isSubmissionSuccess,
+                    onStartedProgress: state.onStartedProgress,
                   )
                 : LaunchViewWeb(
                     keys: state.keys ?? [],

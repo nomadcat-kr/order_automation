@@ -52,6 +52,7 @@ class CoupangApi {
     var headers = {
       'Authorization': authorization,
       'X-Requested-By': vendorId,
+      'Content-type': 'application/json',
     };
 
     List data = [];
@@ -95,6 +96,7 @@ class CoupangApi {
     var headers = {
       'Authorization': authorization,
       'X-Requested-By': vendorId,
+      'Content-type': 'application/json',
     };
 
     Map requestMap = {
@@ -140,6 +142,7 @@ class CoupangApi {
     var headers = {
       'Authorization': authorization,
       'X-Requested-By': vendorId,
+      'Content-type': 'application/json',
     };
 
     Map requestMap = {
@@ -205,6 +208,7 @@ class CoupangApi {
     var headers = {
       'Authorization': authorization,
       'X-Requested-By': vendorId,
+      'Content-type': 'application/json',
     };
 
     List data = [];
@@ -267,6 +271,7 @@ class CoupangApi {
     var headers = {
       'Authorization': authorization,
       'X-Requested-By': vendorId,
+      'Content-type': 'application/json',
     };
 
     List data = [];
@@ -326,6 +331,7 @@ class CoupangApi {
     var headers = {
       'Authorization': authorization,
       'X-Requested-By': vendorId,
+      'Content-type': 'application/json',
     };
 
     Map data = {};
@@ -393,6 +399,7 @@ class CoupangApi {
     var headers = {
       'Authorization': authorization,
       'X-Requested-By': vendorId,
+      'Content-type': 'application/json',
     };
 
     List data = [];
@@ -449,6 +456,7 @@ class CoupangApi {
     var headers = {
       'Authorization': authorization,
       'X-Requested-By': vendorId,
+      'Content-type': 'application/json',
     };
 
     List data = [];

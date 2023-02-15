@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 import 'package:order_automation/app/pages/launch/launch.dart';
 import 'package:order_automation/domain/blocs/launch/launch_bloc.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
@@ -23,6 +24,7 @@ class LaunchViewApp extends StatelessWidget {
     required this.revenueHistory,
     required this.isKeyTextFieldClicked,
     required this.isLoadingFinished,
+    required this.onStartedProgress,
   });
 
   final List<String> keys;
@@ -36,6 +38,7 @@ class LaunchViewApp extends StatelessWidget {
   final Map<dynamic, dynamic> revenueHistory;
   final bool isKeyTextFieldClicked;
   final bool isLoadingFinished;
+  final double onStartedProgress;
 
   @override
   Widget build(BuildContext context) {
@@ -256,10 +259,35 @@ class LaunchViewApp extends StatelessWidget {
                     ),
                   ),
                 )
-              : Expanded(
-                  child: LoadingAnimationWidget.staggeredDotsWave(
-                    color: Colors.white,
-                    size: MediaQuery.of(context).size.height / 10,
+              :
+              // Expanded(
+              //         child: LoadingAnimationWidget.staggeredDotsWave(
+              //           color: Colors.white,
+              //           size: MediaQuery.of(context).size.height / 10,
+              //         ),
+              //       ),
+              Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('${onStartedProgress * 100}%'),
+                      const SizedBox(
+                        height: defaultPadding / 2,
+                      ),
+                      SizedBox(
+                        height: defaultPadding * 3,
+                        child: LiquidLinearProgressIndicator(
+                          value: onStartedProgress,
+                          valueColor:
+                              const AlwaysStoppedAnimation(Colors.white),
+                          backgroundColor: primaryColor,
+                          borderColor: Colors.transparent,
+                          borderWidth: 5.0,
+                          borderRadius: 12.0,
+                          direction: Axis.horizontal,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
         ],

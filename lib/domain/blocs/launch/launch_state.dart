@@ -16,6 +16,7 @@ class LaunchState extends Equatable {
     this.revenueHistory,
     this.keyTextFieldClicked = false,
     this.loadingFinished = false,
+    this.onStartedProgress = 0.0,
   });
 
   final FormzStatus status;
@@ -31,6 +32,7 @@ class LaunchState extends Equatable {
   final Map<dynamic, dynamic>? revenueHistory;
   final bool keyTextFieldClicked;
   final bool loadingFinished;
+  final double onStartedProgress;
 
   @override
   List<Object?> get props => [
@@ -47,6 +49,7 @@ class LaunchState extends Equatable {
         revenueHistory,
         keyTextFieldClicked,
         loadingFinished,
+        onStartedProgress,
       ];
 
   LaunchState copyWith({
@@ -63,6 +66,7 @@ class LaunchState extends Equatable {
     Map<dynamic, dynamic>? revenueHistory,
     bool? keyTextFieldClicked,
     bool? loadingFinished,
+    double? onStartedProgress,
   }) {
     return LaunchState(
       status: status ?? this.status,
@@ -78,6 +82,7 @@ class LaunchState extends Equatable {
       revenueHistory: revenueHistory ?? this.revenueHistory,
       keyTextFieldClicked: keyTextFieldClicked ?? this.keyTextFieldClicked,
       loadingFinished: loadingFinished ?? this.loadingFinished,
+      onStartedProgress: onStartedProgress ?? this.onStartedProgress,
     );
   }
 }
