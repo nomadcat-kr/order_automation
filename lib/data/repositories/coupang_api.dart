@@ -243,7 +243,7 @@ class CoupangApi {
     String inquiryStartAt = DateFormat(format).format(now.add(duration));
     String inquiryEndAt = DateFormat(format).format(now);
 
-    String partnerCounselingStatus = 'NO_ANSWER';
+    String partnerCounselingStatus = 'TRANSFER';
 
     final Map<String, dynamic> queryParameters = {
       'vendorId': vendorId,
