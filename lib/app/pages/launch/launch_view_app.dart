@@ -7,6 +7,7 @@ import 'package:order_automation/app/pages/launch/launch.dart';
 import 'package:order_automation/domain/blocs/launch/launch_bloc.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 import '../../common/common.dart';
 
@@ -259,14 +260,7 @@ class LaunchViewApp extends StatelessWidget {
                     ),
                   ),
                 )
-              :
-              // Expanded(
-              //         child: LoadingAnimationWidget.staggeredDotsWave(
-              //           color: Colors.white,
-              //           size: MediaQuery.of(context).size.height / 10,
-              //         ),
-              //       ),
-              Expanded(
+              : Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -276,15 +270,14 @@ class LaunchViewApp extends StatelessWidget {
                       ),
                       SizedBox(
                         height: defaultPadding * 3,
-                        child: LiquidLinearProgressIndicator(
-                          value: onStartedProgress,
-                          valueColor:
-                              const AlwaysStoppedAnimation(Colors.white),
+                        child: LinearPercentIndicator(
+                          animation: true,
+                          animateFromLastPercent: true,
+                          lineHeight: defaultPadding * 3,
+                          barRadius: const Radius.circular(defaultPadding),
+                          percent: onStartedProgress,
                           backgroundColor: primaryColor,
-                          borderColor: Colors.transparent,
-                          borderWidth: 5.0,
-                          borderRadius: 12.0,
-                          direction: Axis.horizontal,
+                          progressColor: Colors.white,
                         ),
                       ),
                     ],

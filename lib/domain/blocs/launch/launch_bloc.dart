@@ -42,6 +42,7 @@ class LaunchBloc extends Bloc<LaunchEvent, LaunchState> {
     emit(state.copyWith(
       eventType: LaunchEventType.started,
       status: FormzStatus.submissionInProgress,
+      onStartedProgress: 0,
     ));
 
     GetCoupangKeys getCoupangKeys = GetCoupangKeys();
@@ -70,55 +71,39 @@ class LaunchBloc extends Bloc<LaunchEvent, LaunchState> {
       statusAcceptList = await coupangApi.coupangGetOrderSheet(
           coupangStatusAccept, 'ordersheets');
       emit(state.copyWith(
-        eventType: LaunchEventType.started,
-        status: FormzStatus.submissionInProgress,
         onStartedProgress: 1 / 8,
       ));
       statusInstructList = await coupangApi.coupangGetOrderSheet(
           coupangStatusInstruct, 'ordersheets');
       emit(state.copyWith(
-        eventType: LaunchEventType.started,
-        status: FormzStatus.submissionInProgress,
         onStartedProgress: 2 / 8,
       ));
       statusDepartureList = await coupangApi.coupangGetOrderSheet(
           coupangStatusDeparture, 'ordersheets');
       emit(state.copyWith(
-        eventType: LaunchEventType.started,
-        status: FormzStatus.submissionInProgress,
         onStartedProgress: 3 / 8,
       ));
       statusDeliveringList = await coupangApi.coupangGetOrderSheet(
           coupangStatusDelivering, 'ordersheets');
       emit(state.copyWith(
-        eventType: LaunchEventType.started,
-        status: FormzStatus.submissionInProgress,
         onStartedProgress: 4 / 8,
       ));
       statusFinalDeliveryList = await coupangApi.coupangGetOrderSheet(
           coupangStatusFinalDelivery, 'ordersheets');
       emit(state.copyWith(
-        eventType: LaunchEventType.started,
-        status: FormzStatus.submissionInProgress,
         onStartedProgress: 5 / 8,
       ));
       consumerService = await coupangApi.coupangGetConsumerService();
       emit(state.copyWith(
-        eventType: LaunchEventType.started,
-        status: FormzStatus.submissionInProgress,
         onStartedProgress: 6 / 8,
       ));
       callCenterInquiries = await coupangApi.coupangGetCallCenterInquiries();
       emit(state.copyWith(
-        eventType: LaunchEventType.started,
-        status: FormzStatus.submissionInProgress,
         onStartedProgress: 7 / 8,
       ));
       revenueHistory =
           await coupangApi.coupangGetRevenueHistoryFromOrderSheet();
       emit(state.copyWith(
-        eventType: LaunchEventType.started,
-        status: FormzStatus.submissionInProgress,
         onStartedProgress: 8 / 8,
       ));
       // await coupangApi.coupangGetRevenueHistory();
@@ -137,7 +122,6 @@ class LaunchBloc extends Bloc<LaunchEvent, LaunchState> {
       callCenterInquiries: callCenterInquiries,
       revenueHistory: revenueHistory,
       keyTextFieldClicked: false,
-      onStartedProgress: 0,
     ));
   }
 
