@@ -1,12 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 import 'package:order_automation/app/pages/launch/launch.dart';
 import 'package:order_automation/domain/blocs/launch/launch_bloc.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 import '../../common/common.dart';
@@ -55,14 +52,18 @@ class LaunchViewApp extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () async {
-                      // BlocProvider.of<LaunchBloc>(context).add(
-                      //   LaunchEventKeyTextFieldClicked(),
-                      // );
-                      // if (isKeyTextFieldClicked) {
-                      //   BlocProvider.of<LaunchBloc>(context).add(
-                      //     LaunchEventRefreshed(),
-                      //   );
-                      // }
+                      BlocProvider.of<LaunchBloc>(context).add(
+                        LaunchEventRefreshed(),
+                      );
+                      HapticFeedback.heavyImpact();
+                    },
+                    child: const Icon(Icons.refresh),
+                  ),
+                  const SizedBox(
+                    width: defaultPadding,
+                  ),
+                  GestureDetector(
+                    onTap: () async {
                       HapticFeedback.heavyImpact();
 
                       FlutterBarcodeScanner.scanBarcode(
@@ -166,7 +167,7 @@ class LaunchViewApp extends StatelessWidget {
                                           children: [
                                             Expanded(
                                               child: Text(
-                                                  '매출합계 : ${revenueHistory['totalSells']}개 ${revenueHistory['total']}원'),
+                                                  '매출합계 : ${revenueHistory['totalSells'] ?? 0}개 ${revenueHistory['total'] ?? 0}원'),
                                             ),
                                             const SizedBox(
                                               width: defaultPadding / 2,
@@ -264,6 +265,13 @@ class LaunchViewApp extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      Image.asset(
+                        'assets/images/splash_image/splash.png',
+                        width: MediaQuery.of(context).size.width / 1.5,
+                      ),
+                      const SizedBox(
+                        height: defaultPadding,
+                      ),
                       Text('${onStartedProgress * 100}%'),
                       const SizedBox(
                         height: defaultPadding / 2,

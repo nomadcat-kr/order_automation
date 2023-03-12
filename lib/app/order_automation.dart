@@ -34,6 +34,10 @@ class OrderAutomation extends StatelessWidget {
           Theme.of(context).textTheme.apply(bodyColor: Colors.white),
         ),
         canvasColor: secondaryColor,
+        scrollbarTheme: const ScrollbarThemeData().copyWith(
+          thumbColor: MaterialStateProperty.all(Colors.white),
+          thumbVisibility: MaterialStateProperty.all(true),
+        ),
       ),
       home: const LaunchPage(),
     );

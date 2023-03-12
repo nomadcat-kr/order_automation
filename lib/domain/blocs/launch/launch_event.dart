@@ -34,3 +34,37 @@ class LaunchEventInvoiceListPutRequestClicked extends LaunchEvent {}
 class LaunchEventSettlementHistoryGetClicked extends LaunchEvent {}
 
 class LaunchEventKeyTextFieldClicked extends LaunchEvent {}
+
+class LaunchEventRocketGrowthCenterClicked extends LaunchEvent {
+  const LaunchEventRocketGrowthCenterClicked(
+      {required this.rocketGrowthCenter});
+
+  final String rocketGrowthCenter;
+
+  @override
+  List<Object?> get props => [rocketGrowthCenter];
+}
+
+class LaunchEventRocketGrowthBoxEditing extends LaunchEvent {
+  const LaunchEventRocketGrowthBoxEditing({required this.rocketGrowthBox});
+
+  final String rocketGrowthBox;
+
+  @override
+  List<Object?> get props => [rocketGrowthBox];
+}
+
+class LaunchEventRocketGrowthExcelClicked extends LaunchEvent {}
+
+class LaunchEventDistributionCenterClicked extends LaunchEvent {}
+
+class LaunchEventAdReportClicked extends LaunchEvent {}
+
+class LaunchEventAdReportOrderClicked extends LaunchEvent {
+  const LaunchEventAdReportOrderClicked({required this.orderCriteria});
+
+  final String orderCriteria;
+
+  @override
+  List<Object?> get props => [orderCriteria];
+}

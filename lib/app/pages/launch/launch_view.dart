@@ -30,6 +30,12 @@ class LaunchView extends StatelessWidget {
             LaunchEventStarted(),
           );
         }
+        if (state.eventType.isRocketGrowthExcelClicked &&
+            state.status.isSubmissionSuccess) {
+          BlocProvider.of<LaunchBloc>(context).add(
+            LaunchEventStarted(),
+          );
+        }
       },
       builder: (context, state) {
         return Scaffold(
@@ -54,6 +60,29 @@ class LaunchView extends StatelessWidget {
                     keys: state.keys ?? [],
                     isKeyTextFieldClicked: state.keyTextFieldClicked,
                     isLoadingFinished: state.status.isSubmissionSuccess,
+                    rocketGrowthCenter: state.rocketGrowthCenter,
+                    rocketGrowthBox: state.rocketGrowthBox,
+                    isDistributionCenterClicked:
+                        state.distributionCenterClicked,
+                    adReportExcel: state.adReportExcel ?? [],
+                    adReportExcelTotal: state.adReportExcelTotal ?? {},
+                    adReportOrderKeyWordClicked:
+                        state.adReportOrderKeyWordClicked,
+                    adReportOrderImpressionClicked:
+                        state.adReportOrderImpressionClicked,
+                    adReportOrderClicksClicked:
+                        state.adReportOrderClicksClicked,
+                    adReportOrderAdExpensesClicked:
+                        state.adReportOrderAdExpensesClicked,
+                    adReportOrderTotalOrdersClicked:
+                        state.adReportOrderTotalOrdersClicked,
+                    adReportOrderTotalRevenueClicked:
+                        state.adReportOrderTotalRevenueClicked,
+                    adReportOrderCtrClicked: state.adReportOrderCtrClicked,
+                    adReportOrderCpcClicked: state.adReportOrderCpcClicked,
+                    adReportOrderCpaClicked: state.adReportOrderCpaClicked,
+                    adReportOrderRoasClicked: state.adReportOrderRoasClicked,
+                    adReportExcelFileName: state.adReportExcelFileName,
                   ),
           ),
         );

@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:beautiful_soup_dart/beautiful_soup.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:file_picker/file_picker.dart';
@@ -6,11 +9,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:intl/intl.dart';
+import 'package:order_automation/data/data.dart';
 import 'package:order_automation/data/repositories/coupang_api.dart';
 import 'package:order_automation/data/repositories/get_delivery_company_code.dart';
 import 'package:order_automation/data/repositories/get_keys.dart';
 import 'package:excel/excel.dart';
 import 'package:universal_platform/universal_platform.dart';
+import 'package:http/http.dart' as http;
 
 import '../../../app/common/common.dart';
 
@@ -23,9 +28,6 @@ part 'launch_event_type.dart';
 class LaunchBloc extends Bloc<LaunchEvent, LaunchState> {
   LaunchBloc() : super(LaunchInitial()) {
     on<LaunchEventStarted>(_onStarted);
-    on<LaunchEventClicked>(_onClicked);
-    on<LaunchEventTextEditing>(_onTextEditing);
-    on<LaunchEventRefreshed>(_onRefreshed);
     on<LaunchEventOrderListUploadClicked>(_onOrderListUploadClicked);
     on<LaunchEventOrderListDownloadClicked>(_onOrderListDownloadClicked);
     on<LaunchEventInvoiceListUploadClicked>(_onInvoiceListUploadClicked);
@@ -33,6 +35,12 @@ class LaunchBloc extends Bloc<LaunchEvent, LaunchState> {
         _onInvoiceListPutRequestClicked);
     on<LaunchEventSettlementHistoryGetClicked>(_onSettlementHistoryGetClicked);
     on<LaunchEventKeyTextFieldClicked>(_onKeyTextFieldClicked);
+    on<LaunchEventRocketGrowthCenterClicked>(_onRocketGrowthCenterClicked);
+    on<LaunchEventRocketGrowthBoxEditing>(_onRocketGrowthBoxEditing);
+    on<LaunchEventRocketGrowthExcelClicked>(_onRocketGrowthExcelClicked);
+    on<LaunchEventDistributionCenterClicked>(_onDistributionCenterClicked);
+    on<LaunchEventAdReportClicked>(_onAdReportClicked);
+    on<LaunchEventAdReportOrderClicked>(_onAdReportOrderClicked);
   }
 
   void _onStarted(
@@ -49,6 +57,39 @@ class LaunchBloc extends Bloc<LaunchEvent, LaunchState> {
     List<String> keys = getCoupangKeys.getCoupangKeys();
 
     if (UniversalPlatform.isWeb) {
+      // www.coupang.com/vp/product/reviews?productId=1656875081&page=1&size=5&sortBy=ORDER_SCORE_ASC&ratings=&q=&viRoleCode=3&ratingSummary=true
+
+      // debugPrint('start');
+      // String host = 'www.coupang.com';
+      // String path =
+      //     '/vp/products/1656875081?itemId=2823027215&vendorItemId=70812489747';
+      // var headers = {
+      //   'User-Agent':
+      //   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
+      // };
+      //
+      // try {
+      //   http.Response uriResponse = await http.get(Uri.https(host, path,), headers: headers, );
+      //   debugPrint(uriResponse.);
+
+      // BeautifulSoup bs = BeautifulSoup(uriResponse.body);
+      // final allHeaderName = bs.findAll('li', attrs: {'class': '^search-product'});
+      // allHeaderName.forEach((element) {
+      //   print('the header: ${element.text}');
+      // });
+      //
+      // Map<String, dynamic> json = jsonDecode(uriResponse.body);
+      // if (json['code'] != 200) {
+      //   debugPrint(json['code'].toString());
+      //   debugPrint(json['message'].toString());
+      // } else {
+      //   // data = json['data'];
+      //   // debugPrint(data.toString());
+      // }
+      // } catch (e) {
+      //   debugPrint(e.toString());
+      // }
+
       emit(state.copyWith(
         eventType: LaunchEventType.started,
         status: FormzStatus.submissionSuccess,
@@ -122,53 +163,6 @@ class LaunchBloc extends Bloc<LaunchEvent, LaunchState> {
       callCenterInquiries: callCenterInquiries,
       revenueHistory: revenueHistory,
       keyTextFieldClicked: false,
-    ));
-  }
-
-  void _onClicked(
-    LaunchEventClicked event,
-    Emitter<LaunchState> emit,
-  ) async {
-    emit(state.copyWith(
-      eventType: LaunchEventType.clicked,
-      status: FormzStatus.submissionInProgress,
-    ));
-
-    emit(state.copyWith(
-      eventType: LaunchEventType.clicked,
-      status: FormzStatus.submissionSuccess,
-    ));
-  }
-
-  void _onTextEditing(
-    LaunchEventTextEditing event,
-    Emitter<LaunchState> emit,
-  ) async {
-    emit(state.copyWith(
-      eventType: LaunchEventType.textEditing,
-      status: FormzStatus.submissionInProgress,
-    ));
-
-    // String text = event.inputText;
-
-    emit(state.copyWith(
-      eventType: LaunchEventType.textEditing,
-      status: FormzStatus.submissionSuccess,
-    ));
-  }
-
-  void _onRefreshed(
-    LaunchEventRefreshed event,
-    Emitter<LaunchState> emit,
-  ) async {
-    emit(state.copyWith(
-      eventType: LaunchEventType.refreshed,
-      status: FormzStatus.submissionInProgress,
-    ));
-
-    emit(state.copyWith(
-      eventType: LaunchEventType.refreshed,
-      status: FormzStatus.submissionSuccess,
     ));
   }
 
@@ -420,7 +414,6 @@ class LaunchBloc extends Bloc<LaunchEvent, LaunchState> {
     }
 
     Uint8List? file = pickedFile.files.single.bytes;
-    debugPrint(file.toString());
     var excel = Excel.decodeBytes(file!);
     Sheet sheet = excel[excel.getDefaultSheet() ?? 'Sheet1'];
     int lastRow = sheet.maxRows;
@@ -431,25 +424,21 @@ class LaunchBloc extends Bloc<LaunchEvent, LaunchState> {
       int cellRowNumber = i + 2;
       excelDataList.add({
         'name': sheet
-                .cell(CellIndex.indexByString('W$cellRowNumber'))
-                .value
-                .toString() ??
-            '',
+            .cell(CellIndex.indexByString('W$cellRowNumber'))
+            .value
+            .toString(),
         'safeNumber': sheet
-                .cell(CellIndex.indexByString('Z$cellRowNumber'))
-                .value
-                .toString() ??
-            '',
+            .cell(CellIndex.indexByString('Z$cellRowNumber'))
+            .value
+            .toString(),
         'deliveryCompanyCode': sheet
-                .cell(CellIndex.indexByString('T$cellRowNumber'))
-                .value
-                .toString() ??
-            '',
+            .cell(CellIndex.indexByString('T$cellRowNumber'))
+            .value
+            .toString(),
         'invoiceNumber': sheet
-                .cell(CellIndex.indexByString('U$cellRowNumber'))
-                .value
-                .toString() ??
-            '',
+            .cell(CellIndex.indexByString('U$cellRowNumber'))
+            .value
+            .toString(),
       });
     }
 
@@ -572,6 +561,290 @@ class LaunchBloc extends Bloc<LaunchEvent, LaunchState> {
       eventType: LaunchEventType.keyTextFieldClicked,
       status: FormzStatus.submissionSuccess,
       keyTextFieldClicked: isKeyTextFieldClicked,
+    ));
+  }
+
+  void _onRocketGrowthCenterClicked(
+    LaunchEventRocketGrowthCenterClicked event,
+    Emitter<LaunchState> emit,
+  ) async {
+    emit(state.copyWith(
+      eventType: LaunchEventType.rocketGrowthCenterClicked,
+      status: FormzStatus.submissionInProgress,
+    ));
+
+    String rocketGrowthCenter = event.rocketGrowthCenter;
+
+    emit(state.copyWith(
+      eventType: LaunchEventType.rocketGrowthCenterClicked,
+      status: FormzStatus.submissionSuccess,
+      rocketGrowthCenter: rocketGrowthCenter,
+    ));
+  }
+
+  void _onRocketGrowthBoxEditing(
+    LaunchEventRocketGrowthBoxEditing event,
+    Emitter<LaunchState> emit,
+  ) async {
+    emit(state.copyWith(
+      eventType: LaunchEventType.rocketGrowthBoxEditing,
+      status: FormzStatus.submissionInProgress,
+    ));
+
+    String rocketGrowthBox = event.rocketGrowthBox;
+
+    emit(state.copyWith(
+      eventType: LaunchEventType.rocketGrowthBoxEditing,
+      status: FormzStatus.submissionSuccess,
+      rocketGrowthBox: rocketGrowthBox,
+    ));
+  }
+
+  void _onRocketGrowthExcelClicked(
+    LaunchEventRocketGrowthExcelClicked event,
+    Emitter<LaunchState> emit,
+  ) async {
+    emit(state.copyWith(
+      eventType: LaunchEventType.rocketGrowthExcelClicked,
+      status: FormzStatus.submissionInProgress,
+    ));
+
+    ExportRocketGrowthExcel exportRocketGrowthExcel = ExportRocketGrowthExcel();
+    exportRocketGrowthExcel.exportRocketGrowthExcel(
+        state.rocketGrowthCenter, state.rocketGrowthBox);
+
+    emit(state.copyWith(
+      eventType: LaunchEventType.rocketGrowthExcelClicked,
+      status: FormzStatus.submissionSuccess,
+      rocketGrowthCenter: '',
+      rocketGrowthBox: '',
+    ));
+  }
+
+  void _onDistributionCenterClicked(
+    LaunchEventDistributionCenterClicked event,
+    Emitter<LaunchState> emit,
+  ) async {
+    emit(state.copyWith(
+      eventType: LaunchEventType.distributionCenterClicked,
+      status: FormzStatus.submissionInProgress,
+    ));
+
+    bool isDistributionCenterClicked = !state.distributionCenterClicked;
+
+    emit(state.copyWith(
+      eventType: LaunchEventType.distributionCenterClicked,
+      status: FormzStatus.submissionSuccess,
+      distributionCenterClicked: isDistributionCenterClicked,
+    ));
+  }
+
+  void _onAdReportClicked(
+    LaunchEventAdReportClicked event,
+    Emitter<LaunchState> emit,
+  ) async {
+    emit(state.copyWith(
+      eventType: LaunchEventType.adReportClicked,
+      status: FormzStatus.submissionInProgress,
+    ));
+
+    AdReportAnalysis adReportAnalysis = AdReportAnalysis();
+
+    FilePickerResult? excelFile;
+    excelFile = await adReportAnalysis.getExcelFile();
+
+    if (excelFile == null) {
+      emit(state.copyWith(
+        eventType: LaunchEventType.adReportClicked,
+        status: FormzStatus.submissionSuccess,
+      ));
+      return;
+    }
+
+    String adReportExcelFileName = adReportAnalysis.getExcelFileName(excelFile);
+
+    List<dynamic> adReportExcel = [];
+    adReportExcel = await adReportAnalysis.adReportAnalysis(excelFile);
+
+    Map<String, dynamic> adReportExcelTotal = {};
+    adReportExcelTotal =
+        adReportAnalysis.getAdReportAnalysisTotal(adReportExcel);
+
+    for (int i = 0; i < adReportExcel.length; i++) {
+      adReportExcel[i]['ctr'] = adReportExcel[i]['ctr'] + '%';
+      adReportExcel[i]['roas'] = adReportExcel[i]['roas'] + '%';
+      if (adReportExcel[i]['totalOrders'] == '0') {
+        adReportExcel[i]['totalOrders'] = '';
+        adReportExcel[i]['totalRevenue'] = '';
+        adReportExcel[i]['cpa'] = '';
+        adReportExcel[i]['roas'] = '';
+      }
+    }
+
+    emit(state.copyWith(
+      eventType: LaunchEventType.adReportClicked,
+      status: FormzStatus.submissionSuccess,
+      adReportExcel: adReportExcel,
+      adReportExcelTotal: adReportExcelTotal,
+      adReportExcelFileName: adReportExcelFileName,
+    ));
+  }
+
+  void _onAdReportOrderClicked(
+    LaunchEventAdReportOrderClicked event,
+    Emitter<LaunchState> emit,
+  ) async {
+    emit(state.copyWith(
+      eventType: LaunchEventType.adReportOrderClicked,
+      status: FormzStatus.submissionInProgress,
+    ));
+
+    List<dynamic>? adReportExcel = state.adReportExcel;
+    bool isAdReportOrderKeyWordClicked = state.adReportOrderKeyWordClicked;
+    bool isAdReportOrderImpressionClicked =
+        state.adReportOrderImpressionClicked;
+    bool isAdReportOrderClicksClicked = state.adReportOrderClicksClicked;
+    bool isAdReportOrderAdExpensesClicked =
+        state.adReportOrderAdExpensesClicked;
+    bool isAdReportOrderTotalOrdersClicked =
+        state.adReportOrderTotalOrdersClicked;
+    bool isAdReportOrderTotalRevenueClicked =
+        state.adReportOrderTotalRevenueClicked;
+    bool isAdReportOrderCtrClicked = state.adReportOrderCtrClicked;
+    bool isAdReportOrderCpcClicked = state.adReportOrderCpcClicked;
+    bool isAdReportOrderCpaClicked = state.adReportOrderCpaClicked;
+    bool isAdReportOrderRoasClicked = state.adReportOrderRoasClicked;
+
+    if (event.orderCriteria == 'keyword') {
+      if (isAdReportOrderKeyWordClicked) {
+        adReportExcel!.sort((a, b) => a['keyWord'].compareTo(b['keyWord']));
+      } else {
+        adReportExcel!.sort((a, b) => b['keyWord'].compareTo(a['keyWord']));
+      }
+      isAdReportOrderKeyWordClicked = !isAdReportOrderKeyWordClicked;
+    }
+
+    if (event.orderCriteria == 'impression') {
+      if (isAdReportOrderImpressionClicked) {
+        adReportExcel!.sort((a, b) =>
+            num.parse(a['impression']).compareTo(num.parse(b['impression'])));
+      } else {
+        adReportExcel!.sort((a, b) =>
+            num.parse(b['impression']).compareTo(num.parse(a['impression'])));
+      }
+      isAdReportOrderImpressionClicked = !isAdReportOrderImpressionClicked;
+    }
+
+    if (event.orderCriteria == 'clicks') {
+      if (isAdReportOrderClicksClicked) {
+        adReportExcel!.sort(
+            (a, b) => num.parse(a['clicks']).compareTo(num.parse(b['clicks'])));
+      } else {
+        adReportExcel!.sort(
+            (a, b) => num.parse(b['clicks']).compareTo(num.parse(a['clicks'])));
+      }
+      isAdReportOrderClicksClicked = !isAdReportOrderClicksClicked;
+    }
+
+    if (event.orderCriteria == 'adExpenses') {
+      if (isAdReportOrderAdExpensesClicked) {
+        adReportExcel!.sort((a, b) =>
+            num.parse(a['adExpenses']).compareTo(num.parse(b['adExpenses'])));
+      } else {
+        adReportExcel!.sort((a, b) =>
+            num.parse(b['adExpenses']).compareTo(num.parse(a['adExpenses'])));
+      }
+      isAdReportOrderAdExpensesClicked = !isAdReportOrderAdExpensesClicked;
+    }
+
+    if (event.orderCriteria == 'totalOrders') {
+      if (isAdReportOrderTotalOrdersClicked) {
+        adReportExcel!.sort((a, b) =>
+            num.parse(a['totalOrders'].replaceAll('', '0'))
+                .compareTo(num.parse(b['totalOrders'].replaceAll('', '0'))));
+      } else {
+        adReportExcel!.sort((a, b) =>
+            num.parse(b['totalOrders'].replaceAll('', '0'))
+                .compareTo(num.parse(a['totalOrders'].replaceAll('', '0'))));
+      }
+      isAdReportOrderTotalOrdersClicked = !isAdReportOrderTotalOrdersClicked;
+    }
+
+    if (event.orderCriteria == 'totalRevenue') {
+      if (isAdReportOrderTotalRevenueClicked) {
+        adReportExcel!.sort((a, b) =>
+            num.parse(a['totalRevenue'].replaceAll('', '0'))
+                .compareTo(num.parse(b['totalRevenue'].replaceAll('', '0'))));
+      } else {
+        adReportExcel!.sort((a, b) =>
+            num.parse(b['totalRevenue'].replaceAll('', '0'))
+                .compareTo(num.parse(a['totalRevenue'].replaceAll('', '0'))));
+      }
+      isAdReportOrderTotalRevenueClicked = !isAdReportOrderTotalRevenueClicked;
+    }
+
+    if (event.orderCriteria == 'ctr') {
+      if (isAdReportOrderCtrClicked) {
+        adReportExcel!.sort((a, b) => num.parse(a['ctr'].replaceAll('%', ''))
+            .compareTo(num.parse(b['ctr'].replaceAll('%', ''))));
+      } else {
+        adReportExcel!.sort((a, b) => num.parse(b['ctr'].replaceAll('%', ''))
+            .compareTo(num.parse(a['ctr'].replaceAll('%', ''))));
+      }
+      isAdReportOrderCtrClicked = !isAdReportOrderCtrClicked;
+    }
+
+    if (event.orderCriteria == 'cpc') {
+      if (isAdReportOrderCpcClicked) {
+        adReportExcel!
+            .sort((a, b) => num.parse(a['cpc']).compareTo(num.parse(b['cpc'])));
+      } else {
+        adReportExcel!
+            .sort((a, b) => num.parse(b['cpc']).compareTo(num.parse(a['cpc'])));
+      }
+      isAdReportOrderCpcClicked = !isAdReportOrderCpcClicked;
+    }
+
+    if (event.orderCriteria == 'cpa') {
+      if (isAdReportOrderCpaClicked) {
+        adReportExcel!.sort((a, b) => num.parse(a['cpa'].replaceAll('', '0'))
+            .compareTo(num.parse(b['cpa'].replaceAll('', '0'))));
+      } else {
+        adReportExcel!.sort((a, b) => num.parse(b['cpa'].replaceAll('', '0'))
+            .compareTo(num.parse(a['cpa'].replaceAll('', '0'))));
+      }
+      isAdReportOrderCpaClicked = !isAdReportOrderCpaClicked;
+    }
+
+    if (event.orderCriteria == 'roas') {
+      if (isAdReportOrderRoasClicked) {
+        adReportExcel!.sort((a, b) => num.parse(
+                a['roas'].replaceAll('%', '').replaceAll('', '0'))
+            .compareTo(
+                num.parse(b['roas'].replaceAll('%', '').replaceAll('', '0'))));
+      } else {
+        adReportExcel!.sort((a, b) => num.parse(
+                b['roas'].replaceAll('%', '').replaceAll('', '0'))
+            .compareTo(
+                num.parse(a['roas'].replaceAll('%', '').replaceAll('', '0'))));
+      }
+      isAdReportOrderRoasClicked = !isAdReportOrderRoasClicked;
+    }
+
+    emit(state.copyWith(
+      eventType: LaunchEventType.adReportOrderClicked,
+      status: FormzStatus.submissionSuccess,
+      adReportExcel: adReportExcel,
+      adReportOrderKeyWordClicked: isAdReportOrderKeyWordClicked,
+      adReportOrderImpressionClicked: isAdReportOrderImpressionClicked,
+      adReportOrderClicksClicked: isAdReportOrderClicksClicked,
+      adReportOrderAdExpensesClicked: isAdReportOrderAdExpensesClicked,
+      adReportOrderTotalOrdersClicked: isAdReportOrderTotalOrdersClicked,
+      adReportOrderTotalRevenueClicked: isAdReportOrderTotalRevenueClicked,
+      adReportOrderCtrClicked: isAdReportOrderCtrClicked,
+      adReportOrderCpcClicked: isAdReportOrderCpcClicked,
+      adReportOrderCpaClicked: isAdReportOrderCpaClicked,
+      adReportOrderRoasClicked: isAdReportOrderRoasClicked,
     ));
   }
 }
